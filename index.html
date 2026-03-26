@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>叻番茄钟 🍅</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-decoration deco-left"></div>
+  <div class="bg-decoration deco-right"></div>
+
+  <main class="app">
+    <section class="card">
+      <div class="cat-ear left"></div>
+      <div class="cat-ear right"></div>
+
+      <header class="hero">
+        <div class="tomato-wrap">
+          <div class="tomato">
+            <div class="leaf leaf-left"></div>
+            <div class="leaf leaf-right"></div>
+            <div class="face">
+              <span class="eye"></span>
+              <span class="eye"></span>
+              <span class="mouth"></span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="kicker">super cute pomodoro</p>
+          <h1>叻番茄钟</h1>
+          <p class="subtitle">学习 25 分钟，摸鱼也要可可爱爱。</p>
+        </div>
+      </header>
+
+      <section class="mode-switch">
+        <button class="mode active" data-mode="focus">专注</button>
+        <button class="mode" data-mode="shortBreak">短休息</button>
+        <button class="mode" data-mode="longBreak">长休息</button>
+      </section>
+
+      <section class="timer-panel">
+        <div class="ring">
+          <svg viewBox="0 0 220 220" class="progress-svg" aria-hidden="true">
+            <circle cx="110" cy="110" r="96" class="ring-bg"></circle>
+            <circle cx="110" cy="110" r="96" class="ring-progress"></circle>
+          </svg>
+          <div class="time-box">
+            <div id="time" class="time">25:00</div>
+            <div id="status" class="status">准备开始喽 ✨</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="controls">
+        <button id="startPause" class="primary">开始</button>
+        <button id="reset" class="secondary">重置</button>
+      </section>
+
+      <section class="customize">
+        <h2>时长设置</h2>
+        <div class="settings-grid">
+          <label>
+            专注
+            <input id="focusInput" type="number" min="1" max="90" value="25" />
+          </label>
+          <label>
+            短休息
+            <input id="shortBreakInput" type="number" min="1" max="60" value="5" />
+          </label>
+          <label>
+            长休息
+            <input id="longBreakInput" type="number" min="1" max="90" value="15" />
+          </label>
+        </div>
+      </section>
+
+      <section class="stats">
+        <div class="stat-pill">
+          <span class="stat-label">已完成专注</span>
+          <strong id="completedCount">0</strong>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">今日氛围</span>
+          <strong id="moodText">软萌冲刺中</strong>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
