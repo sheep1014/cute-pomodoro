@@ -1,7 +1,22 @@
 const modes = {
-  focus: { label: '专注时间到！去活动一下吧 🍅', inputId: 'focusInput', mood: '软萌冲刺中' },
-  shortBreak: { label: '短休息结束啦，回来继续发光 ✨', inputId: 'shortBreakInput', mood: '小猫伸懒腰中' },
-  longBreak: { label: '长休息结束，准备重新出发 🌈', inputId: 'longBreakInput', mood: '彩虹回血中' }
+  focus: {
+    label: '专注结束，可以休息一下。',
+    inputId: 'focusInput',
+    mood: 'Focused',
+    accent: '#0071e3'
+  },
+  shortBreak: {
+    label: '短休息结束，继续进入状态。',
+    inputId: 'shortBreakInput',
+    mood: 'Breathing',
+    accent: '#5ac8fa'
+  },
+  longBreak: {
+    label: '长休息结束，重新开始。',
+    inputId: 'longBreakInput',
+    mood: 'Recovered',
+    accent: '#34c759'
+  }
 };
 
 const timeEl = document.getElementById('time');
@@ -10,6 +25,7 @@ const startPauseBtn = document.getElementById('startPause');
 const resetBtn = document.getElementById('reset');
 const completedCountEl = document.getElementById('completedCount');
 const moodTextEl = document.getElementById('moodText');
+const statusTextEl = document.getElementById('statusText');
 const progressEl = document.querySelector('.ring-progress');
 const modeButtons = [...document.querySelectorAll('.mode')];
 
@@ -18,7 +34,7 @@ let timer = null;
 let isRunning = false;
 let totalSeconds = getModeMinutes(currentMode) * 60;
 let remainingSeconds = totalSeconds;
-let completedFocusCount = Number(localStorage.getItem('cutePomodoroCompleted') || 0);
+let completedFocusCount = Number(localStorage.getItem('focusTimerCompleted') || 0);
 completedCountEl.textContent = completedFocusCount;
 
 function getModeMinutes(mode) {
@@ -26,7 +42,7 @@ function getModeMinutes(mode) {
 }
 
 function saveCompletedCount() {
-  localStorage.setItem('cutePomodoroCompleted', String(completedFocusCount));
+  localStorage.setItem('focusTimerCompleted', String(completedFocusCount));
 }
 
 function formatTime(seconds) {
@@ -35,18 +51,24 @@ function formatTime(seconds) {
   return `${mins}:${secs}`;
 }
 
+function updateProgressColor() {
+  progressEl.style.stroke = modes[currentMode].accent;
+}
+
 function updateDisplay() {
   timeEl.textContent = formatTime(remainingSeconds);
-  const circumference = 2 * Math.PI * 96;
+  const circumference = 2 * Math.PI * 102;
   const progress = 1 - remainingSeconds / totalSeconds;
   progressEl.style.strokeDasharray = `${circumference}`;
   progressEl.style.strokeDashoffset = `${circumference * (1 - progress)}`;
   moodTextEl.textContent = modes[currentMode].mood;
-  document.title = `${formatTime(remainingSeconds)} · 叻番茄钟`;
+  document.title = `${formatTime(remainingSeconds)} · Focus Timer`;
+  updateProgressColor();
 }
 
 function setStatus(text) {
   statusEl.textContent = text;
+  statusTextEl.textContent = text;
 }
 
 function applyMode(mode) {
@@ -58,24 +80,24 @@ function applyMode(mode) {
   timer = null;
   startPauseBtn.textContent = '开始';
   modeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
-  setStatus(mode === 'focus' ? '准备开始喽 ✨' : '休息一下也很重要 ～');
+  setStatus(mode === 'focus' ? '准备开始' : '切换完成');
   updateDisplay();
 }
 
 function playDing() {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const now = ctx.currentTime;
-  [659.25, 783.99, 1046.5].forEach((freq, index) => {
+  [659.25, 880, 1174.66].forEach((freq, index) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
     osc.frequency.value = freq;
-    gain.gain.setValueAtTime(0.0001, now + index * 0.12);
-    gain.gain.exponentialRampToValueAtTime(0.18, now + 0.02 + index * 0.12);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22 + index * 0.12);
+    gain.gain.setValueAtTime(0.0001, now + index * 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.12, now + 0.02 + index * 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.24 + index * 0.1);
     osc.connect(gain).connect(ctx.destination);
-    osc.start(now + index * 0.12);
-    osc.stop(now + 0.24 + index * 0.12);
+    osc.start(now + index * 0.1);
+    osc.stop(now + 0.26 + index * 0.1);
   });
 }
 
@@ -106,14 +128,14 @@ function toggleTimer() {
   if (!isRunning) {
     isRunning = true;
     startPauseBtn.textContent = '暂停';
-    setStatus(currentMode === 'focus' ? '认真一点，你超棒的 ✨' : '休息模式启动～');
+    setStatus(currentMode === 'focus' ? '专注进行中' : '休息中');
     timer = setInterval(tick, 1000);
   } else {
     isRunning = false;
     clearInterval(timer);
     timer = null;
     startPauseBtn.textContent = '继续';
-    setStatus('已暂停，别发呆太久喔 💤');
+    setStatus('已暂停');
   }
 }
 
