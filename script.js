@@ -57,10 +57,10 @@ function updateProgressColor() {
 
 function updateDisplay() {
   timeEl.textContent = formatTime(remainingSeconds);
-  const circumference = 2 * Math.PI * 102;
-  const progress = 1 - remainingSeconds / totalSeconds;
+  const circumference = 2 * Math.PI * 112;
+  const elapsedProgress = 1 - remainingSeconds / totalSeconds;
   progressEl.style.strokeDasharray = `${circumference}`;
-  progressEl.style.strokeDashoffset = `${circumference * (1 - progress)}`;
+  progressEl.style.strokeDashoffset = `${circumference * elapsedProgress}`;
   moodTextEl.textContent = modes[currentMode].mood;
   document.title = `${formatTime(remainingSeconds)} · Focus Timer`;
   updateProgressColor();
@@ -80,7 +80,7 @@ function applyMode(mode) {
   timer = null;
   startPauseBtn.textContent = '开始';
   modeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
-  setStatus(mode === 'focus' ? '准备开始' : '切换完成');
+  setStatus('准备开始');
   updateDisplay();
 }
 
